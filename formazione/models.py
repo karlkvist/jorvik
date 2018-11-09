@@ -23,6 +23,76 @@ from posta.models import Messaggio
 from social.models import ConCommenti, ConGiudizio
 
 
+class FormazioneTitle(ModelloSemplice, ConMarcaTemporale):
+    name = models.CharField('Nome del corso', max_length=255)
+    livello = models.ForeignKey('FormazioneTitleLevel', null=True, blank=True,
+        verbose_name="Livello")
+
+    class Meta:
+        verbose_name = 'Titolo'
+        verbose_name_plural = 'Titoli'
+
+    def __str__(self):
+        return str(self.name)
+
+
+class FormazioneTitleLevel(models.Model):
+    name = models.CharField('Nome', max_length=255)
+    goal = models.ForeignKey('FormazioneTitleGoal', null=True, blank=True)
+
+    @property
+    def goal_obbiettivo_stragetico(self):
+        return self.goal.unit_reference
+
+    @property
+    def goal_propedeuticita(self):
+        return self.goal.propedeuticita
+
+    @property
+    def goal_unit_reference(self):
+        return self.goal.get_unit_reference_display()
+
+    def __str__(self):
+        return "%s - %s" % (self.name, self.goal)
+
+    class Meta:
+        verbose_name = 'Titolo: Livello'
+        verbose_name_plural = 'Titoli: Livelli'
+
+
+class FormazioneTitleGoal(models.Model):
+    OBBIETTIVO_STRATEGICO_SALUTE = '1'
+    OBBIETTIVO_STRATEGICO_SOCIALE = '2'
+    OBBIETTIVO_STRATEGICO_EMERGENZA = '3'
+    OBBIETTIVO_STRATEGICO_ADVOCACY = '4'
+    OBBIETTIVO_STRATEGICO_GIOVANI = '5'
+    OBBIETTIVO_STRATEGICO_SVILUPPO = '6'
+
+    OBBIETTIVI_STRATEGICI = (
+        (OBBIETTIVO_STRATEGICO_SALUTE, 'Salute'),
+        (OBBIETTIVO_STRATEGICO_SOCIALE, 'Sociale'),
+        (OBBIETTIVO_STRATEGICO_EMERGENZA, 'Emergenza)'),
+        (OBBIETTIVO_STRATEGICO_ADVOCACY, 'Advocacy e mediazione umanitaria'),
+        (OBBIETTIVO_STRATEGICO_GIOVANI, 'Giovani'),
+        (OBBIETTIVO_STRATEGICO_GIOVANI, 'Sviluppo'),
+        # 'Operatore CRI Attività di Emergenza (OPEM)',
+    )
+    unit_reference = models.CharField("Unità riferimento", max_length=3,
+        null=True, blank=True, choices=OBBIETTIVI_STRATEGICI)
+    propedeuticita = models.CharField("Propedeuticità", max_length=255,
+        null=True, blank=True)
+
+    @property
+    def obbiettivo_stragetico(self):
+        return self.unit_reference
+
+    def __str__(self):
+        return "%s (Obbiettivo %s)" % (self.propedeuticita, self.unit_reference)
+
+    class Meta:
+        verbose_name = 'Titolo: Propedeuticità'
+        verbose_name_plural = 'Titoli: Propedeuticità'
+
 class Corso(ModelloSemplice, ConDelegati, ConMarcaTemporale,
             ConGeolocalizzazione, ConCommenti, ConGiudizio):
     # Tipologia di corso
