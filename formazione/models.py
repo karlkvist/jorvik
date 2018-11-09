@@ -26,7 +26,7 @@ from social.models import ConCommenti, ConGiudizio
 class FormazioneTitle(ModelloSemplice, ConMarcaTemporale):
     name = models.CharField('Nome del corso', max_length=255)
     livello = models.ForeignKey('FormazioneTitleLevel', null=True, blank=True,
-        verbose_name="Livello")
+        verbose_name="Livello", on_delete=models.PROTECT)
 
     class Meta:
         verbose_name = 'Titolo'
