@@ -111,6 +111,7 @@ def menu(request):
 
     VOCE_LINKS = ("Links", (
         ("Portale convenzioni", "fa-key", reverse('pages:page', args=['portale-convenzioni'])),
+        ("Convenzioni teatri", "fa-film", '/page/convenzione-teatri/'),
         ("Segnalazione aggressione", "fa-cogs", reverse('pages:page', args=['report-violence'])),
     ))
 

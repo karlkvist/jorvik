@@ -94,3 +94,24 @@ function autoscroll(id) {
     $('body').animate({ scrollTop: top }, 800);
     return false;
 }
+
+// Collapsible menus in the left sidebar
+// template: anagrafica/templates/anagrafica_utente_vuota.html
+var css_class = 'collapsible-menu-active';
+var all_menu = $('.collapsible-menu-ul');
+var current_page_nav = $('.active').closest('ul');
+var prev_elem = null;
+
+all_menu.hide();
+current_page_nav.show();
+
+$('.collapsible-menu-title').on('click', function(){
+    let data_nav_id = $(this).data('nav-id');
+    if (prev_elem) {
+        prev_elem.removeClass(css_class);
+    }
+    prev_elem = $(this);
+    all_menu.hide();
+    $('[data-nav-ul='+data_nav_id+']').show();
+    $(this).addClass(css_class);
+});
