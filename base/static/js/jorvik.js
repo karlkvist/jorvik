@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
     $(function () {
         $('[data-toggle="popover"]').popover()
     })
@@ -80,10 +79,6 @@ $(document).ready(function() {
         scrollMonth : false,
         scrollInput : false,
     });
-
-
-
-
 });
 
 // Funzione per autoscroll.
@@ -103,7 +98,11 @@ var current_page_nav = $('.active').closest('ul');
 var prev_elem = null;
 
 all_menu.hide();
+$(all_menu[0]).show();
 current_page_nav.show();
+
+// sync with base/menu.py
+$('ul li[role=presentation]').filter(":contains('Portale convenzioni')").css({'font-weight': 'bold'});
 
 $('.collapsible-menu-title').on('click', function(){
     let data_nav_id = $(this).data('nav-id');
@@ -114,4 +113,35 @@ $('.collapsible-menu-title').on('click', function(){
     all_menu.hide();
     $('[data-nav-ul='+data_nav_id+']').show();
     $(this).addClass(css_class);
+});
+
+
+var corporate_benefits_link = $('ul li[role=presentation]').filter(":contains('Corporate benefits')");
+var portale_italo_link = $('ul li[role=presentation]').filter(":contains('Portale Italo')");
+
+$(corporate_benefits_link).add(portale_italo_link).on('click', function(e){
+    e.preventDefault();
+    let _thiz = $(this);
+    let link_text = _thiz.text().trim();
+    _thiz.attr({
+        'data-toggle': "modal",
+        'data-target': "#privacy_modal",
+    });
+    if (link_text == 'Corporate benefits') {
+        _thiz.attr('data-redirect', 'https://cri.convenzioniaziendali.it');
+    } else if (link_text == 'Portale Italo') {
+        _thiz.attr('data-redirect', 'https://criv.simplecrs.it/oauth2/crocerossa');
+    }
+});
+
+$(function(){
+    var redirectUrl = '';
+    $('#privacy_modal').on('show.bs.modal', function (event) {
+         redirectUrl=$(event.relatedTarget).attr('data-redirect');
+    });
+
+    var onConfirmClicked = function(){
+        window.open(redirectUrl, '_blank');
+        $('#privacy_modal').modal('toggle');
+    };
 });
